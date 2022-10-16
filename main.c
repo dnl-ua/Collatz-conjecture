@@ -1,22 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
-int main(int argc, char *argv[])
+int 
+main(int argc, char *argv[])
 {
+	if (argv[1] == NULL) return -1;
+
 	FILE *nums;
-	int x;
-	int i;
+	unsigned int x, i;
        
 	nums = fopen("nums.txt", "w+");
 	x = atoi(argv[1]);
+	if ( x == INT_MAX || x == INT_MIN ) return -1;
+
 	fprintf(nums, "Initial number: %d\n", x); 
 	printf("Number: %d\n", x);
 
-	int counter = 0;
-	int digits[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-	int firstDigit;
-	int max = x; 
-	int numSum = 0;
+	unsigned int digits[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+	unsigned int counter, numSum, firstDigit, max;
+	counter = numSum = 0;
+	max = x;
 
 	while (x != 1) {
 		x = (x % 2) ? 3*x+1 : x/2;
@@ -28,40 +32,9 @@ int main(int argc, char *argv[])
 		firstDigit = x;
 		while (firstDigit >= 10) firstDigit /= 10;
 
-		switch(firstDigit) {
-			case 1:
-				digits[0]++;
-				break;
-			case 2:
-				digits[1]++;
-				break;
-			case 3:
-				digits[2]++;
-				break;
-			case 4:
-				digits[3]++;
-				break;
-			case 5:
-				digits[4]++;
-				break;
-			case 6:
-				digits[5]++;
-				break;
-			case 7:
-				digits[6]++;
-				break;
-			case 8:
-				digits[7]++;
-				break;
-			case 9:
-				digits[8]++;
-				break;
-			default:
-				break;
-		}
+		digits[ firstDigit-1 ]++;
 
 		fprintf(nums, "%d\n", x); 
-
 	}
 
 	printf("Amount of steps: %d\n", counter);
@@ -73,7 +46,7 @@ int main(int argc, char *argv[])
 
 	printf("\nLeading digit (percentage):");
 	for (i = 0; i < 9; i++) {
-		float percentage = ((float)digits[i] / (float)digitSum) * 100;
+		float percentage = (float)digits[i] / (float)digitSum * 100;
 		printf("\n%d (%4.1f%%)| ", i+1, percentage);
 
 		for (percentage; percentage >= 0.5; percentage -= 1.0f) {
